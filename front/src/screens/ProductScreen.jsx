@@ -1,17 +1,37 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import products from '../product_list'
 import { Link } from 'react-router-dom'
-import {Card, Row, Col} from 'react-bootstrap'
+import {Card, Row, Col, Badge, Button, Image} from 'react-bootstrap'
 import Rating from '../components/Ratis'
-import {Image} from 'react-bootstrap'
-import {Badge} from 'react-bootstrap'
-import {Button} from 'react-bootstrap'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 
 const ProductScreen = () => {
+    const[product, setProduct] = useState({});
+    const[loading, setLoading] = useState(true);
     const{id:productId} = useParams();
-    const product = products.find((p)=>p._id === productId);
-    console.log(product);
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                setLoading(true);
+                const { data } = await axios.get(`/api/products/${productId}`);
+                setProduct(data);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchProduct();
+    }, [productId]);
+    
+    if (loading) {
+        return <div className='text-center p-5'><h3>Učitavanje...</h3></div>
+    }
+
+    if (!product._id) {
+        return <div className='text-center p-5'><h3>Proizvod nije pronađen</h3></div>
+    }
   return (
       <>
       <Link className='btn btn-outline-secondary mb-4' to='/'> Nazad
@@ -22,7 +42,7 @@ const ProductScreen = () => {
             <Rating value={product.rating} text={`${product.numReviews} recenzija`}/>
             </Col>
             <Col md={4} className='text-md-end mt-3 mt-md-0'>
-            <h3 className='text-primary mb-0'>{product.price.toFixed(2)} RSD</h3>
+            <h3 className='text-primary mb-0'>{product.price ? product.price.toFixed(2) : '...'} RSD</h3>
             </Col>
         </Row>
       </Card>

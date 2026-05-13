@@ -1,0 +1,31 @@
+{
+  "name": "web-script",
+  "version": "1.0.0",
+  "description": "FTN script store MERN stack application",
+  "homepage": "https://github.com/Mateja4329/web-script-store#readme",
+  "bugs": {
+    "url": "https://github.com/Mateja4329/web-script-store/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mateja4329/web-script-store.git"
+  },
+  "license": "MIT",
+  "author": "Mateja Glišović",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "dev": "concurrently \"nodemon backend/server.js\" \"cd front && npm start\""
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongoose": "^9.6.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.4.2",
+    "nodemon": "^3.1.14"
+  }
+}

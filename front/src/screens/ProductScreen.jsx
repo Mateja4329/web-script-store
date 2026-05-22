@@ -1,52 +1,40 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import {Card, Row, Col, Badge, Button, Image} from 'react-bootstrap'
-import Rating from '../components/Ratis'
-import axios from 'axios'
-import { useState, useEffect } from 'react'
+import {Link} from 'react-router-dom'
+import Rating from '../components/Rating';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
+import{Card, Row, Col, Badge, Button, Image} from 'react-bootstrap';
 
 const ProductScreen = () => {
-    const[product, setProduct] = useState({});
-    const[loading, setLoading] = useState(true);
+
+    const [product, setProduct] = useState([]);
     const{id:productId} = useParams();
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                setLoading(true);
-                const { data } = await axios.get(`/api/products/${productId}`);
-                setProduct(data);
-            } catch (error) {
-                console.error('Error fetching product:', error);
-            } finally {
-                setLoading(false);
-            }
-        }
+    //const product = products.find((p)=>p._id === productId);
+    useEffect(()=>{
+        const fetchProduct = async ()=>{
+            const {data} = await axios.get(`/api/products/${productId}`);
+            setProduct(data);
+        };
         fetchProduct();
     }, [productId]);
-    
-    if (loading) {
-        return <div className='text-center p-5'><h3>Učitavanje...</h3></div>
-    }
 
-    if (!product._id) {
-        return <div className='text-center p-5'><h3>Proizvod nije pronađen</h3></div>
-    }
+    console.log(product);
   return (
-      <>
-      <Link className='btn btn-outline-secondary mb-4' to='/'> Nazad
-      </Link>
-      <Card className='border-0 shadow-sm p-4 mb-4'>
+    <>
+    <Link className='btn btn-outline-secondary mb-4' to='/'>  Nazad
+    </Link>
+    <Card className='border-0 shadow-sm p-4 mb-4'>
         <Row className='align-items-center'>
             <Col md={8}> <h2 className='mb-2'>{product.name}</h2>
-            <Rating value={product.rating} text={`${product.numReviews} recenzija`}/>
+            <Rating value={product.rating} text={`${product.numReviews} recencija`}/>
             </Col>
             <Col md={4} className='text-md-end mt-3 mt-md-0'>
-            <h3 className='text-primary mb-0'>{product.price ? product.price.toFixed(2) : '...'} RSD</h3>
+            <h3 className='text-primary mb-0'>{product?.price?.toFixed(2)} RSD</h3>
             </Col>
         </Row>
-      </Card>
-      <Row className='gy-4'>
+    </Card>
+    <Row className='gy-4'>
         <Col lg={8}>
         <Card className='border-0 shadow-sm p-4'>
             <div className='text-center'>
@@ -66,7 +54,7 @@ const ProductScreen = () => {
                     <span>Status:</span>
                     {product.countInStock > 0? (
                         <Badge bg='success'>Dostupno</Badge>
-                    ): (<Badge bg='danger'>Nedostupno</Badge>)
+                    ): (<Badge bg='danger'>Nije dostupno</Badge>)
                     }
                 </div>
                 <div className='d-grid'>
@@ -76,14 +64,14 @@ const ProductScreen = () => {
             </Card.Body>
         </Card>
         </Col>
-      </Row>
-      <Card className='border-0 shadow-sm p-4 mt-4'>
+    </Row>
+    <Card className='border-0 shadow-sm mt-4'>
         <Card.Body>
             <h4 className='mb-3'>Opis proizvoda</h4>
             <p className='text-muted mb-0'>{product.description}</p>
         </Card.Body>
-      </Card>
-      </>
+    </Card>
+    </>
   )
 }
 
